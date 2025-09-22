@@ -7,8 +7,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
-    host: str = Field(default="{{ cookiecutter.app_host }}", alias="APP_HOST")
-    port: int = Field(default={{ cookiecutter.app_port }}, alias="APP_PORT")
+    host: str = Field(default="0.0.0.0", alias="APP_HOST")
+    port: int = Field(default=8080, alias="APP_PORT")
     environment: str = Field(default="dev", alias="ENVIRONMENT")
     debug: bool = Field(default=False, alias="DEBUG")
     log_level: str = Field(default="INFO", alias="LOG_LEVEL")

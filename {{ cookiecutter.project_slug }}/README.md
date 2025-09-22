@@ -51,7 +51,7 @@ Or using uvicorn directly:
 uvicorn main:app --reload
 ```
 
-The application will be available at `http://{{ cookiecutter.app_host }}:{{ cookiecutter.app_port }}`
+The application will be available at `http://localhost:8080`
 
 ## Development
 
@@ -77,5 +77,5 @@ uv add --group dev <package-name>
 ## API Documentation
 
 Once the application is running, you can access:
-- Swagger UI: `http://{{ cookiecutter.app_host }}:{{ cookiecutter.app_port }}/docs`
-- ReDoc: `http://{{ cookiecutter.app_host }}:{{ cookiecutter.app_port }}/redoc`
+- Swagger UI: `http://localhost:8080/docs`
+- ReDoc: `http://localhost:8080/redoc`
