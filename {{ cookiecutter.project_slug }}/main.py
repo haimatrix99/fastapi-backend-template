@@ -1,11 +1,10 @@
-import logging.config
 from contextlib import asynccontextmanager
 
 import httpx
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.core import LOGGING_CONFIG, get_settings
+from app.core import get_settings
 {% if cookiecutter.include_database == "y" -%}
 from app.infrastructure.database import init_db, close_db
 {%- endif %}
@@ -15,10 +14,6 @@ from app.routers.users import users_router
 {%- endif %}
 
 settings = get_settings()
-
-logging.config.dictConfig(LOGGING_CONFIG)
-
-logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
