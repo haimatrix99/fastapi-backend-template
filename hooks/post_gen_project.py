@@ -85,6 +85,17 @@ def main():
                 os.remove(full_path)
                 print(f"Removed: {file_path}")
 
+    # Initialize git repository
+    print("\nInitializing git repository...")
+    run_command("git init", cwd=project_dir)
+
+    # Create initial commit
+    print("Creating initial commit...")
+    run_command("git add .", cwd=project_dir)
+    run_command(
+        "git commit -m 'Initial commit from FastAPI Backend template'", cwd=project_dir
+    )
+
     # Run ruff format and check
     print("\nRunning code formatting and linting...")
     result = run_command("which uv")
