@@ -5,11 +5,13 @@ description = "{{ cookiecutter.project_description }}"
 readme = "README.md"
 requires-python = ">={{ cookiecutter.python_version }}"
 dependencies = [
-    "fastapi>=0.117.1",
-    "httpx>=0.28.1",
-    "pydantic-settings>=2.10.1",
-    "pydantic[email]>=2.11.9",
     "uvicorn>=0.36.0",
+    "fastapi>=0.117.1",
+    "pydantic-settings>=2.10.1",
+    "httpx>=0.28.1",
+{%- if cookiecutter.include_example == "y" %}
+    "pydantic[email]>=2.11.9",
+{%- endif %}
 {%- if cookiecutter.include_database == "y" %}
     "sqlalchemy>=2.0.0",
     "greenlet>=3.2.4",
