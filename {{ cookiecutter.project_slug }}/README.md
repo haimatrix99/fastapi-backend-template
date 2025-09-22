@@ -6,7 +6,7 @@
 
 ### Prerequisites
 
-- Python {{ cookiecutter.python_version }} or higher
+- Python 3.13 or higher
 - [uv](https://docs.astral.sh/uv/) package manager (recommended)
 
 ### Setup
