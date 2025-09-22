@@ -22,7 +22,7 @@ dependencies = [
 {% elif cookiecutter.database_type == "mysql" %}
     "aiomysql>=0.2.0",
 {%- endif %}
-{%- endif %}
+{%- endif -%}
 ]
 
 [dependency-groups]
