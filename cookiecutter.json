@@ -9,8 +9,8 @@
   "app_host": "0.0.0.0",
   "app_port": "8080",
   "include_database": "y",
-  "database_type": "sqlite",
-  "database_url": "sqlite+aiosqlite:///./app.db",
+  "database_type": "postgresql",
+  "database_url": "postgresql://user:password@localhost:5432/dbname",
   "include_example": "y",
   "include_tests": "y",
   "_copy_without_render": [
