@@ -1,0 +1,33 @@
+[project]
+name = "{{ cookiecutter.project_slug }}"
+version = "{{ cookiecutter.version }}"
+description = "{{ cookiecutter.project_description }}"
+readme = "README.md"
+requires-python = ">={{ cookiecutter.python_version }}"
+dependencies = [
+    "fastapi>=0.117.1",
+    "httpx>=0.28.1",
+    "pydantic-settings>=2.10.1",
+    "pydantic[email]>=2.11.9",
+    "uvicorn>=0.36.0",
+{%- if cookiecutter.include_database == "y" %}
+    "sqlalchemy>=2.0.0",
+    "greenlet>=3.2.4",
+{%- if cookiecutter.database_type == "sqlite" %}
+    "aiosqlite>=0.20.0",
+{% elif cookiecutter.database_type == "postgresql" %}
+    "asyncpg>=0.29.0",
+{% elif cookiecutter.database_type == "mysql" %}
+    "aiomysql>=0.2.0",
+{%- endif %}
+{%- endif %}
+]
+
+[dependency-groups]
+dev = [
+{%- if cookiecutter.include_tests == "y" %}
+    "pytest>=8.4.2",
+    "pytest-asyncio>=1.2.0",
+{%- endif %}
+    "ruff>=0.9.0",
+]

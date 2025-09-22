@@ -1,0 +1,22 @@
+{
+  "project_name": "FastAPI Backend",
+  "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
+  "project_description": "A FastAPI backend template",
+  "author_name": "Your Name",
+  "author_email": "your.email@example.com",
+  "version": "0.1.0",
+  "python_version": "3.13",
+  "app_host": "0.0.0.0",
+  "app_port": "8080",
+  "include_database": "y",
+  "database_type": "sqlite",
+  "database_url": "sqlite+aiosqlite:///./app.db",
+  "include_example": "y",
+  "include_tests": "y",
+  "_copy_without_render": [
+    "*.gitignore",
+    "*.gitattributes",
+    "*.gitkeep",
+    ".cookiecutter_context.json"
+  ]
+}
