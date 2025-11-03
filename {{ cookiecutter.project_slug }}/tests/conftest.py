@@ -2,11 +2,13 @@ import asyncio
 
 import pytest
 from app.infrastructure.database import Base, get_db
+from app.infrastructure.redis import get_redis
 from fastapi.testclient import TestClient
 from main import app
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
+from unittest.mock import AsyncMock, patch
 
 # Use an in-memory SQLite database for tests
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
@@ -64,9 +66,12 @@ def client(test_db):
 
     # Override the get_db dependency to use the test session
     app.dependency_overrides[get_db] = override_get_db
-
-    with TestClient(app) as c:
-        yield c
+    
+    # Mock Redis for tests
+    mock_redis = AsyncMock()
+    with patch("app.infrastructure.redis.get_redis", return_value=mock_redis):
+        with TestClient(app) as c:
+            yield c
 
     # Clean up
     app.dependency_overrides.clear()
