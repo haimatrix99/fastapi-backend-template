@@ -66,12 +66,9 @@ def client(test_db):
 
     # Override the get_db dependency to use the test session
     app.dependency_overrides[get_db] = override_get_db
-    
-    # Mock Redis for tests
-    mock_redis = AsyncMock()
-    with patch("app.infrastructure.redis.get_redis", return_value=mock_redis):
-        with TestClient(app) as c:
-            yield c
+
+    with TestClient(app) as c:
+        yield c
 
     # Clean up
     app.dependency_overrides.clear()

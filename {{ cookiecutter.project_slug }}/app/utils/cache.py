@@ -114,8 +114,16 @@ def cache_result(key_prefix: str, ttl: Optional[int] = None):
     def decorator(func: Callable) -> Callable:
         @wraps(func)
         async def wrapper(*args, **kwargs):
-            # Generate cache key from function arguments
-            cache_key = f"{key_prefix}:{args}:{kwargs}"
+            # Generate cache key from function arguments using JSON serialization
+            try:
+                # Sort kwargs for consistent key generation
+                sorted_kwargs = sorted(kwargs.items())
+                cache_key_data = {"args": args, "kwargs": sorted_kwargs}
+                cache_key_suffix = json.dumps(cache_key_data, sort_keys=True)
+                cache_key = f"{key_prefix}:{cache_key_suffix}"
+            except (TypeError, ValueError):
+                # If serialization fails, skip caching
+                return await func(*args, **kwargs)
             
             # Try to get from cache
             cached_value = await CacheManager.get_json(cache_key)

@@ -4,8 +4,6 @@ import redis.asyncio as redis
 
 from app.core import get_settings
 
-settings = get_settings()
-
 # Global Redis connection pool
 redis_client: Optional[redis.Redis] = None
 
@@ -13,6 +11,8 @@ redis_client: Optional[redis.Redis] = None
 async def init_redis() -> None:
     """Initialize Redis connection pool."""
     global redis_client
+    
+    settings = get_settings()
     
     if not settings.redis_enabled:
         return
