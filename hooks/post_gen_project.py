@@ -90,13 +90,14 @@ def main():
     result = run_command("which uv")
     if result:
         print("Using uv to run ruff...")
-        run_command("uv run ruff format .", cwd=project_dir)
-        run_command("uv run ruff check --fix .", cwd=project_dir)
+        ruff_prefix = "uv run "
     else:
         print("uv not found. Running ruff with pip...")
         run_command("pip install ruff", cwd=project_dir)
-        run_command("ruff format .", cwd=project_dir)
-        run_command("ruff check --fix .", cwd=project_dir)
+        ruff_prefix = ""
+    
+    run_command(f"{ruff_prefix}ruff format .", cwd=project_dir)
+    run_command(f"{ruff_prefix}ruff check --fix .", cwd=project_dir)
 
     print("\nNext steps:")
     print("1. cd into your project directory")
