@@ -8,7 +8,7 @@ A Cookiecutter template for creating a FastAPI backend with best practices and a
 - Structured project layout
 - Configurable settings with Pydantic
 - Colored logging
-- Redis caching layer with utilities and decorators
+- Redis caching layer with utilities and decorators (optional)
 - Database support (optional)
 - CORS support (optional)
 - HTTP client (optional)

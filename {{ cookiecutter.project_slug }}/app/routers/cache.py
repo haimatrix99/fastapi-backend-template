@@ -1,4 +1,4 @@
-{% if cookiecutter.include_example == "y" -%}
+{% if cookiecutter.include_example == "y" and cookiecutter.include_redis == "y" -%}
 from typing import Optional
 
 from fastapi import APIRouter, status, HTTPException

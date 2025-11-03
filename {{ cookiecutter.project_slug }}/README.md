@@ -31,6 +31,7 @@
    ```bash
    pip install -e .
    ```
+{% if cookiecutter.include_redis == "y" -%}
 
 3. Set up Redis (optional but recommended):
    
@@ -47,11 +48,20 @@
    To disable Redis, set `REDIS_ENABLED=false` in your `.env` file.
 
 4. Create a `.env` file by copying the example:
+{%- else -%}
+
+3. Create a `.env` file by copying the example:
+{%- endif %}
    ```bash
    cp .env.example .env
    ```
+{% if cookiecutter.include_redis == "y" -%}
 
 5. Modify the `.env` file to match your environment settings if needed.
+{%- else -%}
+
+4. Modify the `.env` file to match your environment settings if needed.
+{%- endif %}
 
 ## Running the Application
 
@@ -93,6 +103,7 @@ uv add --group dev <package-name>
 Once the application is running, you can access:
 - Swagger UI: `http://localhost:8080/docs`
 - ReDoc: `http://localhost:8080/redoc`
+{% if cookiecutter.include_redis == "y" -%}
 
 ## Redis Caching
 
@@ -163,3 +174,4 @@ If you included example endpoints, cache management endpoints are available at:
 - `DELETE /cache/delete/{key}` - Delete a cached value
 - `GET /cache/exists/{key}` - Check if a key exists
 - `DELETE /cache/clear/{pattern}` - Clear cache keys matching a pattern
+{%- endif %}

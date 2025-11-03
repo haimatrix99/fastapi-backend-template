@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     database_url: str = Field(default="{{ cookiecutter.database_url }}", alias="DATABASE_URL")
     database_type: str = Field(default="{{ cookiecutter.database_type }}", alias="DATABASE_TYPE")
 {%- endif %}
+{% if cookiecutter.include_redis == "y" -%}
 
     # Redis settings
     redis_enabled: bool = Field(default=True, alias="REDIS_ENABLED")
@@ -26,6 +27,7 @@ class Settings(BaseSettings):
     redis_decode_responses: bool = Field(default=True, alias="REDIS_DECODE_RESPONSES")
     redis_socket_timeout: int = Field(default=5, alias="REDIS_SOCKET_TIMEOUT")
     redis_socket_connect_timeout: int = Field(default=5, alias="REDIS_SOCKET_CONNECT_TIMEOUT")
+{%- endif %}
 
     @field_validator("log_level", mode="before")
     @classmethod

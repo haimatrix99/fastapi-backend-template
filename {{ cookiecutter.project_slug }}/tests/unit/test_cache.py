@@ -1,3 +1,4 @@
+{% if cookiecutter.include_redis == "y" -%}
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -201,3 +202,4 @@ async def test_invalidate_cache_decorator():
         assert result == "result"
         mock_redis.keys.assert_called_once_with("test:*")
         mock_redis.delete.assert_called_once_with("test:key1", "test:key2")
+{%- endif %}

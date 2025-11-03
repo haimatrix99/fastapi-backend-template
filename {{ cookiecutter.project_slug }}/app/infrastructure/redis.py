@@ -1,3 +1,4 @@
+{% if cookiecutter.include_redis == "y" -%}
 from typing import Optional
 
 import redis.asyncio as redis
@@ -38,3 +39,4 @@ async def close_redis() -> None:
 async def get_redis() -> Optional[redis.Redis]:
     """Get Redis client instance."""
     return redis_client
+{%- endif %}

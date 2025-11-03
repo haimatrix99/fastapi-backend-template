@@ -1,3 +1,4 @@
+{% if cookiecutter.include_redis == "y" and cookiecutter.include_example == "y" -%}
 import pytest
 from unittest.mock import AsyncMock, patch
 
@@ -93,3 +94,4 @@ def test_clear_cache_pattern(client):
         data = response.json()
         assert data["pattern"] == "test:*"
         assert data["deleted_count"] == 5
+{%- endif %}

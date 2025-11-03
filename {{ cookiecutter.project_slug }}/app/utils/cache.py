@@ -1,3 +1,4 @@
+{% if cookiecutter.include_redis == "y" -%}
 import json
 from functools import wraps
 from typing import Any, Callable, Optional
@@ -163,3 +164,4 @@ def invalidate_cache(key_pattern: str):
         
         return wrapper
     return decorator
+{%- endif %}
