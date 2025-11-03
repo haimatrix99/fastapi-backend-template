@@ -10,6 +10,8 @@ from app.schemas import UserCreate, UserUpdate
 
 
 class UserService:
+    """User service with database persistence."""
+    
     @staticmethod
     async def get_all_users(db: AsyncSession) -> List[User]:
         """Get all users"""
@@ -88,6 +90,8 @@ user_id_counter = 1
 
 
 class UserService:
+    """User service with in-memory storage."""
+    
     @staticmethod
     async def get_all_users() -> List[User]:
         """Get all users"""
@@ -137,16 +141,16 @@ class UserService:
         if user_data.email and any(u.email == user_data.email and u.id != user_id for u in users_db):
             raise ValueError("Email already registered")
         
-        user_data_obj = users_db[user_index]
+        user = users_db[user_index]
         
         # Update fields if provided
         update_data = user_data.model_dump(exclude_unset=True)
         for field, value in update_data.items():
-            setattr(user_data_obj, field, value)
+            setattr(user, field, value)
         
-        user_data_obj.updated_at = datetime.now()
+        user.updated_at = datetime.now()
         
-        return user_data_obj
+        return user
 
     @staticmethod
     async def delete_user(user_id: int) -> bool:

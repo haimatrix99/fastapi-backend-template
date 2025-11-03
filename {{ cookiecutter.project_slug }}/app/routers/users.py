@@ -2,27 +2,27 @@
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from app.schemas import UserCreate, UserResponse, UserUpdate
 {% if cookiecutter.include_database == "y" -%}
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.database import get_db
 {%- endif %}
+
+from app.schemas import UserCreate, UserResponse, UserUpdate
 from app.services.user_service import UserService
 
 users_router = APIRouter(prefix="/users", tags=["Users"])
 
-{% if cookiecutter.include_database == "y" -%}
+
 @users_router.get("/", response_model=List[UserResponse])
-async def get_users(db: AsyncSession = Depends(get_db)):
+async def get_users({% if cookiecutter.include_database == "y" %}db: AsyncSession = Depends(get_db){% endif %}):
     """Get all users"""
-    return await UserService.get_all_users(db)
+    return await UserService.get_all_users({% if cookiecutter.include_database == "y" %}db{% endif %})
 
 
 @users_router.get("/{user_id}", response_model=UserResponse)
-async def get_user(user_id: int, db: AsyncSession = Depends(get_db)):
+async def get_user(user_id: int{% if cookiecutter.include_database == "y" %}, db: AsyncSession = Depends(get_db){% endif %}):
     """Get a specific user by ID"""
-    user = await UserService.get_user_by_id(db, user_id)
+    user = await UserService.get_user_by_id({% if cookiecutter.include_database == "y" %}db, {% endif %}user_id)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -32,10 +32,10 @@ async def get_user(user_id: int, db: AsyncSession = Depends(get_db)):
 
 
 @users_router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-async def create_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
+async def create_user(user: UserCreate{% if cookiecutter.include_database == "y" %}, db: AsyncSession = Depends(get_db){% endif %}):
     """Create a new user"""
     try:
-        return await UserService.create_user(db, user)
+        return await UserService.create_user({% if cookiecutter.include_database == "y" %}db, {% endif %}user)
     except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -44,10 +44,10 @@ async def create_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
 
 
 @users_router.put("/{user_id}", response_model=UserResponse)
-async def update_user(user_id: int, user_update: UserUpdate, db: AsyncSession = Depends(get_db)):
+async def update_user(user_id: int, user_update: UserUpdate{% if cookiecutter.include_database == "y" %}, db: AsyncSession = Depends(get_db){% endif %}):
     """Update a user"""
     try:
-        user = await UserService.update_user(db, user_id, user_update)
+        user = await UserService.update_user({% if cookiecutter.include_database == "y" %}db, {% endif %}user_id, user_update)
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -62,73 +62,13 @@ async def update_user(user_id: int, user_update: UserUpdate, db: AsyncSession = 
 
 
 @users_router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_user(user_id: int, db: AsyncSession = Depends(get_db)):
+async def delete_user(user_id: int{% if cookiecutter.include_database == "y" %}, db: AsyncSession = Depends(get_db){% endif %}):
     """Delete a user"""
-    deleted = await UserService.delete_user(db, user_id)
+    deleted = await UserService.delete_user({% if cookiecutter.include_database == "y" %}db, {% endif %}user_id)
     if not deleted:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"User with ID {user_id} not found"
         )
     return None
-{% else -%}
-@users_router.get("/", response_model=List[UserResponse])
-async def get_users():
-    """Get all users"""
-    return await UserService.get_all_users()
-
-
-@users_router.get("/{user_id}", response_model=UserResponse)
-async def get_user(user_id: int):
-    """Get a specific user by ID"""
-    user = await UserService.get_user_by_id(user_id)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"User with ID {user_id} not found"
-        )
-    return user
-
-
-@users_router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-async def create_user(user: UserCreate):
-    """Create a new user"""
-    try:
-        return await UserService.create_user(user)
-    except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
-        )
-
-
-@users_router.put("/{user_id}", response_model=UserResponse)
-async def update_user(user_id: int, user_update: UserUpdate):
-    """Update a user"""
-    try:
-        user = await UserService.update_user(user_id, user_update)
-        if not user:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"User with ID {user_id} not found"
-            )
-        return user
-    except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
-        )
-
-
-@users_router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_user(user_id: int):
-    """Delete a user"""
-    deleted = await UserService.delete_user(user_id)
-    if not deleted:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"User with ID {user_id} not found"
-        )
-    return None
-{%- endif %}
 {%- endif %}
