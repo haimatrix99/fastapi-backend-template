@@ -10,6 +10,7 @@
   "include_database": "y",
   "database_type": "postgresql",
   "database_url": "postgresql+asyncpg://user:password@localhost:5432/dbname",
+  "include_redis": "y",
   "_copy_without_render": [
     "*.gitignore",
     "*.gitattributes",

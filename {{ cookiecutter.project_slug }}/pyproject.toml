@@ -3,12 +3,15 @@ name = "{{ cookiecutter.project_slug }}"
 version = "{{ cookiecutter.version }}"
 description = "{{ cookiecutter.project_description }}"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.11"
 dependencies = [
     "uvicorn>=0.36.0",
     "fastapi>=0.117.1",
     "pydantic-settings>=2.10.1",
     "httpx>=0.28.1",
+{%- if cookiecutter.include_redis == "y" %}
+    "redis>=5.0.0",
+{%- endif %}
 {%- if cookiecutter.include_example == "y" %}
     "pydantic[email]>=2.11.9",
 {%- endif %}

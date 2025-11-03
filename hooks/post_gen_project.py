@@ -7,6 +7,7 @@ This script runs after the project is generated.
 import json
 import os
 import subprocess
+import sys
 
 
 def run_command(command, cwd=None):
@@ -36,25 +37,12 @@ def main():
     print("\nProject generated successfully!")
     print(f"Project directory: {project_dir}")
 
-    # Get cookiecutter context
-    # Cookiecutter doesn't directly pass context to hooks, so we need to read it from a file
-    # that contains the context. We'll look for a file named .cookiecutter_context.json
-    context_file_path = os.path.join(project_dir, ".cookiecutter_context.json")
-    include_example = "y"  # Default value
-    include_database = "n"  # Default value
-    database_type = "sqlite"  # Default value
-
-    if os.path.exists(context_file_path):
-        try:
-            with open(context_file_path, "r") as f:
-                context = json.load(f)
-                include_example = context.get("include_example", "y")
-                include_database = context.get("include_database", "n")
-                database_type = context.get("database_type", "sqlite")
-            # Remove the context file as it's no longer needed
-            os.remove(context_file_path)
-        except (json.JSONDecodeError, IOError) as e:
-            print(f"Warning: Could not read context file: {e}")
+    # Get cookiecutter context from environment variables
+    # Cookiecutter sets COOKIECUTTER_* environment variables
+    include_example = "{{ cookiecutter.include_example }}"
+    include_database = "{{ cookiecutter.include_database }}"
+    include_redis = "{{ cookiecutter.include_redis }}"
+    database_type = "{{ cookiecutter.database_type }}"
 
     # Remove example files if include_example is not "y"
     if include_example != "y":
@@ -67,6 +55,23 @@ def main():
         ]
 
         for file_path in example_files:
+            full_path = os.path.join(project_dir, file_path)
+            if os.path.exists(full_path):
+                os.remove(full_path)
+                print(f"Removed: {file_path}")
+
+    # Remove Redis files if include_redis is not "y"
+    if include_redis != "y":
+        print("\nRemoving Redis files...")
+        redis_files = [
+            "app/infrastructure/redis.py",
+            "app/routers/cache.py",
+            "app/utils/cache.py",
+            "tests/unit/test_cache.py",
+            "tests/unit/test_cache_router.py",
+        ]
+
+        for file_path in redis_files:
             full_path = os.path.join(project_dir, file_path)
             if os.path.exists(full_path):
                 os.remove(full_path)
@@ -103,8 +108,9 @@ def main():
     print("1. cd into your project directory")
     print("2. Copy .env.example to .env and update the configuration")
 
+    step_num = 3
     if include_database == "y":
-        print("3. Set up your database:")
+        print(f"{step_num}. Set up your database:")
         if database_type == "sqlite":
             print("   - SQLite will create the database file automatically")
         elif database_type == "postgresql":
@@ -113,16 +119,28 @@ def main():
         elif database_type == "mysql":
             print("   - Create a MySQL database")
             print("   - Update the DATABASE_URL in .env with your database credentials")
+        step_num += 1
 
-    print("4. Run the development server:")
+    if include_redis == "y":
+        print(f"{step_num}. Set up Redis (optional):")
+        print("   - Run Redis locally or use Docker: docker run -d -p 6379:6379 redis:latest")
+        print("   - Or set REDIS_ENABLED=false in .env to disable")
+        step_num += 1
+
+    print(f"{step_num}. Run the development server:")
     print("   uv run main.py")
     print("   or")
     print("   uvicorn main:app --reload")
-    print("5. Open http://localhost:8080 in your browser")
-    print("6. Check the health endpoint at http://localhost:8080/health")
+    step_num += 1
+    print(f"{step_num}. Open http://localhost:8080 in your browser")
+    step_num += 1
+    print(f"{step_num}. Check the health endpoint at http://localhost:8080/health")
+    step_num += 1
 
     if include_example == "y":
-        print("7. Try the user endpoints at http://localhost:8080/users")
+        print(f"{step_num}. Try the user endpoints at http://localhost:8080/users")
+        if include_redis == "y":
+            print(f"{step_num + 1}. Try the cache endpoints at http://localhost:8080/cache")
 
     # Initialize git repository
     print("\nInitializing git repository...")

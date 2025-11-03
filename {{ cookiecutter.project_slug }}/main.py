@@ -8,9 +8,15 @@ from app.core import get_settings
 {% if cookiecutter.include_database == "y" -%}
 from app.infrastructure.database import init_db, close_db
 {%- endif %}
+{% if cookiecutter.include_redis == "y" -%}
+from app.infrastructure.redis import init_redis, close_redis
+{%- endif %}
 from app.routers.health import health_router
 {% if cookiecutter.include_example == "y" -%}
 from app.routers.users import users_router
+{%- endif %}
+{% if cookiecutter.include_redis == "y" and cookiecutter.include_example == "y" -%}
+from app.routers.cache import cache_router
 {%- endif %}
 
 settings = get_settings()
@@ -23,6 +29,10 @@ async def lifespan(app: FastAPI):
     # Initialize database
     await init_db()
 {%- endif %}
+{% if cookiecutter.include_redis == "y" %}
+    # Initialize Redis
+    await init_redis()
+{%- endif %}
 
     try:
         yield
@@ -31,6 +41,10 @@ async def lifespan(app: FastAPI):
 {% if cookiecutter.include_database == "y" %}
         # Close database connections
         await close_db()
+{%- endif %}
+{% if cookiecutter.include_redis == "y" %}
+        # Close Redis connections
+        await close_redis()
 {%- endif %}
 
 
@@ -52,6 +66,9 @@ app.add_middleware(
 app.include_router(health_router)
 {% if cookiecutter.include_example == "y" -%}
 app.include_router(users_router)
+{%- endif %}
+{% if cookiecutter.include_redis == "y" and cookiecutter.include_example == "y" -%}
+app.include_router(cache_router)
 {%- endif %}
 
 
